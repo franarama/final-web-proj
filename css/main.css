@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab');
+@import url('https://fonts.googleapis.com/css?family=Francois+One');
+
+* {
+	font-family: 'Roboto Slab', serif;
+	font-size: 14px;
+}
+
+.navbar.navbar-inverse .navbar-header .navbar-brand {
+    display: block;
+    text-align:center;
+    float: none;
+	font-family: 'Francois One', serif;
+	font-size: 40px;
+	letter-spacing: 3px;
+}
+
+.navbar.navbar-inverse .navbar-header{
+  float: none; 
+}
