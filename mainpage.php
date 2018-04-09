@@ -17,10 +17,6 @@
 </head>
 
 <body>
-<form method="post" action="controller.php" id="invisible">
-	<input type="hidden" name="page" value="MainPage"></input>
-	<input type="hidden" name="command" value="list-rooms"></input>
-</form>
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -70,8 +66,8 @@
 		<div class="container-fluid" id="tools-container">
                     <table class="table">
 			<thead><tr>
-			  <th style='text-align:left;'><label>Sort by:</label>&nbsp;<select class="selectpicker show-tick"><option>Closest distance</option></select></th>			       <th style='text-align:center;'><input type="text" placeholder="&nbsp;Search here" id="search-bar"></input></th>
-			  <th style='text-align:right;'><button class="glyphicon glyphicon-plus" title="Add chat room" id="add-room"></button></th>
+			  <th style='text-align:left;border:none;'><label>Sort by:</label>&nbsp;<select class="selectpicker show-tick"><option>Closest distance</option></select></th>			       <th style='text-align:center;border:none;'><input type="text" placeholder="&nbsp;Search here" id="search-bar"></input></th>
+			  <th style='text-align:right;border:none;'><button class="glyphicon glyphicon-plus" title="Add chat room" id="add-room"></button></th>
 			</tr></thead>
 		    </table>
 		</div>
@@ -128,12 +124,13 @@ $('#cancel-add-room').click(function() {
 // for the slider on log in/sign up to show slider value
 var slider = document.getElementById("range");
 var output = document.getElementById("slider-output");
-output.innerHTML = slider.value + " km";
-
+// fix this later - is null when logged in
+//output.innerHTML = slider.value + " km";
+/*
 slider.oninput = function() {
 	output.innerHTML = this.value + " km";
 }
-
+*/
 </script>
 <script>
 var xhttp = new XMLHttpRequest();
@@ -141,16 +138,25 @@ xhttp.onreadystatechange = function() {
 	if (this.readyState == 4 & this.status == 200) {
 		var data = JSON.parse(this.responseText);
 		var str = "";
+		var title = "";
+		var r_date = "";
+		var user_id;
 		if (data.length > 0) {
-			str = '<table class="table">';
-                            str += '<tr>';
-                            for (var p in data[0])
-                                str += '<th>' + p + '</th>';
-                            str += '</tr>';
+			str = '<table class="table" id="rooms-table">';
                             for (var i = 0; i < data.length; i++) {
                                 str += '<tr>';
-                                for (var p in data[i])
-                                   str += '<td>' + data[i][p] + '</td>';
+                                for (var p in data[i]) {
+                                   if (p == "date_created") r_date = data[i][p];
+				   if (p == "title") title = data[i][p];
+				   if (p == "user_id") user_id = data[i][p];
+				}
+				str += '<td><div id="room-head">' + title + '</div><br>' + r_date + '</td>';
+				str += '<td><p id="distance-p">Distance: 1.4km</p></td>';
+				str += '<td><button class="btn btn-primary">Join</button></td>';
+				if (user_id == <?php echo $_SESSION['userid'] ?>) {
+					str += '<td><button class="btn btn-danger">Delete</button></td>';
+				}
+				else str += '<td></td>';
                                 str += '</tr>';
                             }
                             str += '</table>';
@@ -163,7 +169,6 @@ var query = "page=MainPage&command=list-rooms";
 xhttp.open('POST', url);
 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 xhttp.send(query);
-
 </script>
 </body>
 
