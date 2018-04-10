@@ -1,3 +1,4 @@
+<?php if ('session_id' == "") session_start(); ?>
 <!DOCTYPE html>
 <html lang="en" >
 
@@ -50,7 +51,7 @@
 		<p class="error"><?php if(isset($_SESSION['update-error'])) echo $_SESSION['update-error']; ?></p>
 		<p>The default search radius is 50km. You can change it now or later.</p>
 		<label class='modal-label' id="search-label">Search radius:&nbsp;</label>
-		<input type="range" min="1" max="200" value=<?php echo $_SESSION['radius'];?> class="slider" id="range" name="radius"></input><br>
+		<input type="range" min="1" max="200" value=<?php echo get_radius($_SESSION['username']);?> class="slider" id="range" name="radius"></input><br>
 		<label class='modal-label'>Value:&nbsp;</label>
 		<p id="slider-output"></p>
 		<input type="submit" class="btn btn-primary" value="Submit" id="radius-submit-btn"></input>
@@ -90,7 +91,28 @@
   </div>
 
 <script>
+$(document).ready(function() {
 
+if (navigator.geolocation) {
+	navigator.geolocation.getCurrentPosition(addPosition);
+}
+else {
+	window.alert("Geolocation not supported by your browser");
+}
+
+function addPosition(position) {
+	var latitude = position.coords.latitude;
+	var longitude = position.coords.longitude;
+	var url = "functions.php";
+	var query = {latitude: latitude, longitude: longitude};
+	$.post(url, query, function(data) {
+	});
+	
+	//$.post("https://cs.tru.ca/~framunnow8/Project/final-proj/functions.php", {latitude:latitude, longitude:longitude});
+}
+});
+</script>
+<script>
 $(document).ready(function() {
 <?php
 	if (isset($_SESSION['display_type'])) {
@@ -148,6 +170,11 @@ slider.oninput = function() {
 	output.innerHTML = this.value + " km";
 }
 
+// calculates distance between two points
+function get_distance(latitude1, longitude1, latitude2, longitude2) {
+	var ans = Math.sqrt((Math.pow((latitude2 - latitude1), 2) + Math.pow((longitude2 - longitude1), 2)));
+	return ans.toFixed(2);
+} 
 </script>
 <script>
 var xhttp = new XMLHttpRequest();
@@ -159,6 +186,11 @@ xhttp.onreadystatechange = function() {
 		var r_date = "";
 		var user_id;
 		var room_id;
+		var r_lat;
+		var r_long;
+		var u_lat = <?php echo $_SESSION['latitude'];?>;
+		var u_long = <?php echo $_SESSION['longitude']; ?>;
+		var rad = <?php echo get_radius($_SESSION['username']);?>;
 		if (data.length > 0) {
 			str = '<table class="table" id="rooms-table">';
                             for (var i = 0; i < data.length; i++) {
@@ -168,15 +200,19 @@ xhttp.onreadystatechange = function() {
 				   if (p == "title") title = data[i][p];
 				   if (p == "user_id") user_id = data[i][p];
 				   if (p == "room_id") room_id = data[i][p];
+				   if (p == "latitude") r_lat = data[i][p];
+				   if (p == "longitude") r_long = data[i][p];
 				}
-				str += '<td><div id="room-head">' + title + '</div><br>' + r_date + '</td>';
-				str += '<td><p id="distance-p">Distance: 1.4km</p></td>';
-				str += '<td><button class="btn btn-primary">Join</button></td>';
-				if (user_id == <?php echo $_SESSION['userid'] ?>) {
-					str += '<td><a class="btn btn-danger" href="functions.php?room_id='+room_id+'&uid=<?php echo $_SESSION['userid']?>&command=delete-room&page=MainPage">Delete</a></td>';
-				}
-				else str += '<td></td>';
+				if (get_distance(r_lat, r_long, u_lat, u_long) <= rad) { 
+					str += '<td><div id="room-head">' + title + '</div><br><p id="p-date">' + r_date + '</p></td>';
+					str += '<td><p id="distance-p"><i>' + get_distance(r_lat, r_long, u_lat, u_long) + ' km away</i></p></td>';
+					str += '<td><button class="btn btn-primary">Join</button></td>';
+					if (user_id == <?php echo $_SESSION['userid'] ?>) {
+						str += '<td><a class="btn btn-danger" href="functions.php?room_id='+room_id+'&uid=<?php echo $_SESSION['userid']?>&command=delete-room&page=MainPage">Delete</a></td>';
+					}
+					else str += '<td></td>';
                                 str += '</tr>';
+				}
                             }
                             str += '</table>';
 		}

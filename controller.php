@@ -55,6 +55,44 @@ if ($_POST['page'] == 'StartPage') {
             		}
 			
             		break;
+
+		case 'forgot-pw':
+			if(!does_exist($_POST['username'])) {
+				$_SESSION['error'] = "Username does not exist";
+				$_SESSION['display_type'] = "forgot-pw";
+				include('login2.php');
+			}
+			else {
+				$_SESSION['username'] = $_POST['username'];
+				$_SESSION['error'] = "";
+				$_SESSION['option'] = get_security_q($_POST['username']);
+				$_SESSION['display_type'] = "security-questions";
+				include('login2.php');
+			}
+			break;
+		case 'check-security':
+			if ($_POST['answer'] == get_security_answer($_SESSION['username'])) {
+				$_SESSION['display_type'] = 'set-password';
+				$_SESSION['error'] = "";
+				include('login2.php');
+			}
+			else {
+				$_SESSION['error'] = "Incorrect answer";
+				$_SESSION['display_type'] = "security-questions";
+				include('login2.php');
+			}
+			break;
+		case 'set-password':
+			if (update_password($_SESSION['username'], $_POST['password'])) {
+				$_SESSION['error'] = "Password changed. Please login";
+				$_SESSION['display_type'] = "signin";
+				include('login2.php');
+			}
+			else {
+				$_SESSION['error'] = "An error occured";
+				$_SESSION['display_type'] = "set-password";
+				include("login2.php");
+			}
 	}
 }
 
@@ -62,7 +100,7 @@ else if ($_POST['page'] == 'MainPage') {
 	$command = $_POST['command'];
 	switch($command) {
 		case 'add-room':
-			if (insert_new_room($_SESSION['username'], NULL, NULL, $_POST['title'])) {
+			if (insert_new_room($_SESSION['username'], $_SESSION['latitude'], $_SESSION['longitude'], $_POST['title'])) {
 				$_SESSION['display_type'] = 'signed-in';
 				include('mainpage.php');
 			}
@@ -83,6 +121,7 @@ else if ($_POST['page'] == 'MainPage') {
 				include('mainpage.php');
 			}
 			break;
+
 		case 'list-rooms':
 			$r = list_rooms();
 			$str = json_encode($r);

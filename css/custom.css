@@ -92,7 +92,6 @@ h2 {
 #room-head {
 	text-align: left;
 	font-size: 30px;
-	margin-left: 35px;
 }
 #distance-p {
 	margin-top: 65px;
@@ -106,8 +105,8 @@ h2 {
 	overflow-y: scroll;
 	display: block;
 }
-#rooms-table td {
-	width: 300px;
+#rooms-table tr td:nth-child(3), #rooms-table tr td:last-child {
+	width: 200px;
 }
 
 #account-container {
@@ -120,4 +119,11 @@ h2 {
 
 * {
 	outline: none;
+}
+
+#rooms-table tr td:first-child, #rooms-table tr td:nth-child(2) {
+	width: 400px;
+} 
+#p-date {
+	margin-left: -110px;
 }
