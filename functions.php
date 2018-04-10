@@ -1,6 +1,7 @@
 <?php
-if ('session_id' == '') session_start();
 
+//if ('session_id' == "") 
+session_start();
 if (isset($_POST['latitude'])) $_SESSION['latitude'] = $_POST['latitude'];
 if (isset($_POST['longitude'])) $_SESSION['longitude'] = $_POST['longitude'];
 
@@ -41,15 +42,15 @@ function get_username($userid) {
 	else return -1;
 }
 if(!function_exists('get_radius')) {
-function get_radius($userid) {
-	global $conn;
-	$sql = 'select * from Users_Proj where user_id='.$userid;
-	$result = mysqli_query($conn, $sql);
-	if (mysqli_num_rows($result) > 0) {
-		$row = mysqli_fetch_assoc($result);
-		return $row['radius'];
+	function get_radius($userid) {
+		global $conn;
+		$sql = 'select * from Users_Proj where user_id='.$userid;
+		$result = mysqli_query($conn, $sql);
+		if (mysqli_num_rows($result) > 0) {
+			$row = mysqli_fetch_assoc($result);
+			return $row['radius'];
+		}
+		else return -1;
 	}
-	else return -1;
-}
 }
 ?>
