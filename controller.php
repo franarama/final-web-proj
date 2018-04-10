@@ -16,16 +16,18 @@ if ($_POST['page'] == 'StartPage') {
 		case 'Login':
 			if (!is_valid($_POST['username'], $_POST['password'])) {
 				$_SESSION['error'] = "Invalid username or password";
+				$_SESSION['display_type'] = "signin";
                			 include('login2.php');
 	     		}
 	     		else {
 				$_SESSION['signedin'] = 'YES';
                 		$_SESSION['username'] = $_POST['username'];
 			        $_SESSION['userid'] = get_userid($_POST['username']);
-				$_SESSION['display_type'] = 'signed-in';
+				$_SESSION['radius'] = get_radius($_POST['username']);
+				$_SESSION['display_type'] = 'set-radius';
 				include ('mainpage.php');
 	     		}
-	     		exit();
+	     		break;
 
 	     	case 'Join':
 			
@@ -41,7 +43,7 @@ if ($_POST['page'] == 'StartPage') {
 					$_SESSION['username'] = $_POST['username'];
 					$_SESSION['userid'] = get_userid($_POST['username']);
 					$_SESSION['display_type'] = "set-radius";
-					$_SESSION['radius'] = 50;
+					$_SESSION['radius'] = get_radius($_POST['username']);
                     			include('mainpage.php');
                 		}
 				
@@ -52,7 +54,7 @@ if ($_POST['page'] == 'StartPage') {
                 		}
             		}
 			
-            		exit();
+            		break;
 	}
 }
 
@@ -69,6 +71,7 @@ else if ($_POST['page'] == 'MainPage') {
 				$_SESSION['display_type'] = 'add-room';
 				include('mainpage.php');
 			}
+			break;
 		case 'set-radius':
 			if (update_radius($_POST['radius'], $_SESSION['username'])) {
 				$_SESSION['display_type'] = "signed-in";
@@ -79,11 +82,14 @@ else if ($_POST['page'] == 'MainPage') {
 				$_SESSION['update-error'] = "An error occured";
 				include('mainpage.php');
 			}
+			break;
 		case 'list-rooms':
 			$r = list_rooms();
 			$str = json_encode($r);
 			echo $str;
+			break;
 	}
 }
+
 
 ?>

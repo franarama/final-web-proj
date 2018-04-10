@@ -2,6 +2,9 @@
 <html lang="en" >
 
 <head>
+  <?php
+  	include_once('functions.php');
+  ?>
   <meta charset="UTF-8">
   <title>WhatsUp? Login</title>
   <link rel="stylesheet" href="css/custom.css">
@@ -59,9 +62,19 @@
   <div class="container-fluid">
           <div class="main-page">
 
-		<div class="container-fluid" id="cog-container">
-			<a class="glyphicon glyphicon-cog" href="account.php" title="Account Settings" id="cog"></a>
+		<!-- account settings drop down -->
+		<div class="container-fluid" id="account-container">
+			<div class="btn-group dropdown">
+				<button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown" id="drop-btn">Options
+				<span class="caret"</span></button>
+			<ul class="dropdown-menu">
+				<li><a href="logout.php">Logout</a></li>
+				<li><a href="controller.php?id=<?php echo $_SESSION['userid']; ?>"> Delete account</a></li>
+				<li><a id="radius-btn">Set radius<a></li>
+			</ul>
+			</div>
 		</div>
+		<!-- end of account settings drop down -->
 		<div class="container-fluid"><h1>Nearby Chat Rooms</h1></div>
 		<div class="container-fluid" id="tools-container">
                     <table class="table">
@@ -121,16 +134,20 @@ $('#cancel-add-room').click(function() {
 	$('#add-room-modal').hide();
 	$('#blanket-full').hide();
 });
+$('#radius-btn').click(function() {
+	$('#get-radius-modal').show();
+	$('#blanket-full').show();
+});
+
 // for the slider on log in/sign up to show slider value
 var slider = document.getElementById("range");
 var output = document.getElementById("slider-output");
-// fix this later - is null when logged in
-//output.innerHTML = slider.value + " km";
-/*
+output.innerHTML = slider.value + " km";
+
 slider.oninput = function() {
 	output.innerHTML = this.value + " km";
 }
-*/
+
 </script>
 <script>
 var xhttp = new XMLHttpRequest();
@@ -141,6 +158,7 @@ xhttp.onreadystatechange = function() {
 		var title = "";
 		var r_date = "";
 		var user_id;
+		var room_id;
 		if (data.length > 0) {
 			str = '<table class="table" id="rooms-table">';
                             for (var i = 0; i < data.length; i++) {
@@ -149,12 +167,13 @@ xhttp.onreadystatechange = function() {
                                    if (p == "date_created") r_date = data[i][p];
 				   if (p == "title") title = data[i][p];
 				   if (p == "user_id") user_id = data[i][p];
+				   if (p == "room_id") room_id = data[i][p];
 				}
 				str += '<td><div id="room-head">' + title + '</div><br>' + r_date + '</td>';
 				str += '<td><p id="distance-p">Distance: 1.4km</p></td>';
 				str += '<td><button class="btn btn-primary">Join</button></td>';
 				if (user_id == <?php echo $_SESSION['userid'] ?>) {
-					str += '<td><button class="btn btn-danger">Delete</button></td>';
+					str += '<td><a class="btn btn-danger" href="functions.php?room_id='+room_id+'&uid=<?php echo $_SESSION['userid']?>&command=delete-room&page=MainPage">Delete</a></td>';
 				}
 				else str += '<td></td>';
                                 str += '</tr>';

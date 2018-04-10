@@ -91,10 +91,4 @@ function list_rooms() {
 		$data[$i++] = $row;
 	return $data;
 }
-function delete_room($room_id) {
-	global $conn;
-	$sql = "delete * from Rooms_Proj where room_id='$room_id'";
-	$result = mysqli_query($conn, $sql);
-	return $result;
-}
 ?>
