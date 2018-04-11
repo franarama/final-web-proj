@@ -1,11 +1,11 @@
-<?php if ('session_id' == "") session_start(); ?>
+<?php 
+if (session_id() == "") session_start();
+include_once('functions.php');
+?>
 <!DOCTYPE html>
 <html lang="en" >
 
 <head>
-  <?php
-  	include_once('functions.php');
-  ?>
   <meta charset="UTF-8">
   <title>WhatsUp? Login</title>
   <link rel="stylesheet" href="css/custom.css">
@@ -51,7 +51,7 @@
 		<p class="error"><?php if(isset($_SESSION['update-error'])) echo $_SESSION['update-error']; ?></p>
 		<p>The default search radius is 50km. You can change it now or later.</p>
 		<label class='modal-label' id="search-label">Search radius:&nbsp;</label>
-		<input type="range" min="1" max="200" value=<?php echo get_radius($_SESSION['username']);?> class="slider" id="range" name="radius"></input><br>
+		<input type="range" min="1" max="200" value=<?php echo get_search_radius($_SESSION['userid']);?> class="slider" id="range" name="radius"></input><br>
 		<label class='modal-label'>Value:&nbsp;</label>
 		<p id="slider-output"></p>
 		<input type="submit" class="btn btn-primary" value="Submit" id="radius-submit-btn"></input>
@@ -70,7 +70,7 @@
 				<span class="caret"</span></button>
 			<ul class="dropdown-menu">
 				<li><a href="logout.php">Logout</a></li>
-				<li><a href="controller.php?id=<?php echo $_SESSION['userid']; ?>"> Delete account</a></li>
+				<li><a href="functions.php?command=delete-account&id=<?php echo $_SESSION['userid']; ?>"> Delete account</a></li>
 				<li><a id="radius-btn">Set radius<a></li>
 			</ul>
 			</div>
@@ -190,7 +190,7 @@ xhttp.onreadystatechange = function() {
 		var r_long;
 		var u_lat = <?php echo $_SESSION['latitude'];?>;
 		var u_long = <?php echo $_SESSION['longitude']; ?>;
-		var rad = <?php echo get_radius($_SESSION['username']);?>;
+		var rad = <?php echo get_search_radius($_SESSION['userid']);?>;
 		if (data.length > 0) {
 			str = '<table class="table" id="rooms-table">';
                             for (var i = 0; i < data.length; i++) {
@@ -208,7 +208,7 @@ xhttp.onreadystatechange = function() {
 					str += '<td><p id="distance-p"><i>' + get_distance(r_lat, r_long, u_lat, u_long) + ' km away</i></p></td>';
 					str += '<td><button class="btn btn-primary">Join</button></td>';
 					if (user_id == <?php echo $_SESSION['userid'] ?>) {
-						str += '<td><a class="btn btn-danger" href="functions.php?room_id='+room_id+'&uid=<?php echo $_SESSION['userid']?>&command=delete-room&page=MainPage">Delete</a></td>';
+						str += '<td><a class="btn btn-danger" href="functions.php?command=delete-room&room_id=' + room_id + '">Delete</a></td>';
 					}
 					else str += '<td></td>';
                                 str += '</tr>';

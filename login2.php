@@ -39,7 +39,18 @@
         			<input type='hidden' name='command' value='Join'></input>
 				<label><input type="text" placeholder="username" name="username" required="required"/></label>
 				<label><input type="password" placeholder="password" name="password" required="required"/></label>
-				<label><input type="text" placeholder="email address" name="email" required="required"/></label>
+				<label><input type="text" style="margin-bottom: 30px;" placeholder="email address" name="email" required="required"></label>
+				<br><label>Set a security question and answer:</label><br>
+				<div class="form-group">
+					<select class="form-control" name="security-question">
+						<?php
+							include_once('model.php');
+							$q_arr = get_security_questions();
+							foreach ($q_arr as $val) echo '<option value='.$val[0].'>' . $val[1] . '</option>'; 
+						?>
+					</select>
+				</div>
+				<label><input type="text" name="security-answer" placeholder="Security question answer" required="required"></label>
 				<label><button type="submit" class="btn btn-primary" id="submit-btn-2">Create</button></label>
 				<br>
 				<label><p class="message">Already registered?<button type="button" class="btn btn-primary" id="showLogin">Sign In</button></p></label>
@@ -63,9 +74,9 @@
 				<p class="error"><?php if (isset($_SESSION['error'])) echo $_SESSION['error'];?></p>
 				<input type="hidden" name="page" value="StartPage"></input>
 				<input type="hidden" name="command" value="forgot-pw"></input>
-				<label><input type="text" placeholder="Enter your username" name="username" required="required"/></label>
-				<label><button type="submit" class="btn btn-primary" id="submit-btn">Continue</button>
-				<button type="button" style="margin-top:40px;" class="btn btn-primary" id="cancel-forgot-pw">Cancel</button></label>
+				<label><input type="text" style="margin-bottom: 40px;" placeholder="Enter your username" name="username" required="required"/></label>
+				<label><button type="submit" class="btn btn-primary" id="submit-btn-forgot-pw">Continue</button>
+				<button type="button" class="btn btn-primary" id="cancel-forgot-pw">Cancel</button></label>
 			</form>
 
 			<form class="security-form" method="post" action="controller.php">
@@ -75,7 +86,7 @@
 				<input type="hidden" name="command" value="check-security"></input>
 				<div class="form-group">
 					<select class="form-control" id="sel1">
-						<?php echo "<option>" . $_SESSION['option'] . "</option>";?>
+						<?php echo "<option>" . get_security_q($_SESSION['username']) . "</option>";?>
 					</select>
 				</div> 
 				<input type="text" name="answer" placeholder="Your answer"></input>

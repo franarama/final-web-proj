@@ -1,13 +1,13 @@
 <?php
 $conn = mysqli_connect('localhost', 'framunnow7', 'framunnow7424', 'COMP3540_framunno');
 
-function insert_new_user($username, $password, $email) {
+function insert_new_user($username, $password, $email, $question, $answer) {
     global $conn;
     
     if (does_exist($username))
         return false;
     else {
-        $sql = "insert into Users_Proj values (NULL, '$username', '$password', '$email', NULL)";
+        $sql = "insert into Users_Proj values (NULL, '$username', '$password', '$email', 50, '$question', '$answer')";
         $result = mysqli_query($conn, $sql);
         return $result;
     }
@@ -23,7 +23,14 @@ function insert_new_room($username, $latitude, $longitude, $title) {
 	return $result;
 
 }
-
+function get_security_questions() {
+	global $conn;
+	$sql = "select * from security_questions";
+	$to_return = array();
+	$result = mysqli_query($conn, $sql);
+	while ($row = mysqli_fetch_array($result)) array_push($to_return, $row);
+	return $to_return;
+}
 
 function get_userid($username) { 
 

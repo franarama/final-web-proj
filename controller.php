@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_id() == '')  session_start();
 
 if (empty($_POST['page'])) {  
     $_SESSION['display_type'] = 'no-signin';  
@@ -38,12 +38,13 @@ if ($_POST['page'] == 'StartPage') {
             		}
 			else {
 				
-                		if (insert_new_user($_POST['username'], $_POST['password'], $_POST['email'])) {
+                		if (insert_new_user($_POST['username'], $_POST['password'], $_POST['email'], $_POST['security-question'], $_POST['security-answer'])) {
 					$_SESSION['signedin'] = 'YES';
 					$_SESSION['username'] = $_POST['username'];
 					$_SESSION['userid'] = get_userid($_POST['username']);
 					$_SESSION['display_type'] = "set-radius";
 					$_SESSION['radius'] = get_radius($_POST['username']);
+					$_SESSION['error'] = "";
                     			include('mainpage.php');
                 		}
 				

@@ -123,7 +123,9 @@ h2 {
 
 #rooms-table tr td:first-child, #rooms-table tr td:nth-child(2) {
 	width: 400px;
-} 
+}
+ 
 #p-date {
 	margin-left: -110px;
 }
+
