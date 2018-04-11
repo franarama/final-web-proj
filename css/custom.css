@@ -44,9 +44,10 @@
 }
 
 #search-bar {
-	width: 300px;
-	margin-right: 60px;
+	width: 250px;
+	height: 25px;
 	border-radius: 5px;
+	margin-left: -25px;
 	color: #2b2b2b;
 }
 
