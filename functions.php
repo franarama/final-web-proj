@@ -17,6 +17,12 @@ if (isset($_GET['command'])) {
 		include('mainpage.php');
 	}
 }
+function get_room_title($room_id) {
+        global $conn;
+        $sql = "select * from Rooms_Proj where room_id='$room_id'";
+        $result = mysqli_query($conn, $sql);
+        while ($row = mysqli_fetch_assoc($result)) return $row['title'];
+}
 
 
 function delete_account($user_id) {

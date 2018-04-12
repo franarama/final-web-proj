@@ -7,7 +7,7 @@ include_once('functions.php');
 
 <head>
   <meta charset="UTF-8">
-  <title>WhatsUp? Login</title>
+  <title>WhatsUp?</title>
   <link rel="stylesheet" href="css/custom.css">
   <link rel="stylesheet" href="css/main.css">
   <!-- Latest compiled and minified CSS -->
@@ -80,7 +80,7 @@ include_once('functions.php');
 		<div class="container-fluid" id="tools-container">
                     <table class="table">
 			<thead><tr>
-			  <th style='text-align:left;border:none;'><input type="text" placeholder="&nbsp;Search here" id="search-bar"></input></th>
+			  <th style='text-align:left;border:none;'><input type="search" placeholder="&nbsp;Search here" id="search-bar" class="light-table-filter" data-table="order-table"></input></th>
 			  <th style='text-align:right;border:none;'><button class="glyphicon glyphicon-plus" title="Add chat room" id="add-room"></button></th>
 			</tr></thead>
 		    </table>
@@ -111,6 +111,45 @@ function addPosition(position) {
 	//$.post("https://cs.tru.ca/~framunnow8/Project/final-proj/functions.php", {latitude:latitude, longitude:longitude});
 }
 });
+(function(document) {
+	'use strict';
+
+	var LightTableFilter = (function(Arr) {
+
+		var _input;
+
+		function _onInputEvent(e) {
+			_input = e.target;
+			var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
+			Arr.forEach.call(tables, function(table) {
+				Arr.forEach.call(table.tBodies, function(tbody) {
+					Arr.forEach.call(tbody.rows, _filter);
+				});
+			});
+		}
+
+		function _filter(row) {
+			var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
+			row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
+		}
+
+		return {
+			init: function() {
+				var inputs = document.getElementsByClassName('light-table-filter');
+				Arr.forEach.call(inputs, function(input) {
+					input.oninput = _onInputEvent;
+				});
+			}
+		};
+	})(Array.prototype);
+
+	document.addEventListener('readystatechange', function() {
+		if (document.readyState === 'complete') {
+			LightTableFilter.init();
+		}
+	});
+
+})(document);
 </script>
 <script>
 $(document).ready(function() {
@@ -235,7 +274,7 @@ xhttp.onreadystatechange = function() {
 		var u_long = <?php echo $_SESSION['longitude']; ?>;
 		var rad = <?php echo get_search_radius($_SESSION['userid']);?>;
 		if (data.length > 0) {
-			str = '<table class="table" id="rooms-table">';
+			str = '<table class="order-table table" id="rooms-table">';
                             for (var i = 0; i < data.length; i++) {
                                 for (var p in data[i]) {
                                    if (p == "date_created") r_date = data[i][p];
@@ -249,7 +288,7 @@ xhttp.onreadystatechange = function() {
 					str += '<tr>'; 
 					str += '<td><div id="room-head">' + title + '</div><br><p id="p-date">' + r_date + '</p></td>';
 					str += '<td><p id="distance-p"><i>' + get_distance(r_lat, r_long, u_lat, u_long) + ' km away</i></p></td>';
-					str += '<td><button class="btn btn-primary">Join</button></td>';
+					str += '<td><a class="btn btn-primary" href="chat.php?room_id=' + room_id + '" target="_blank">Join</a></td>';
 					if (user_id == <?php echo $_SESSION['userid'] ?>) {
 						str += '<td><a class="btn btn-danger" href="functions.php?command=delete-room&room_id=' + room_id + '">Delete</a></td>';
 					}

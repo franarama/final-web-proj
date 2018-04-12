@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>WhatsUp? Login</title>
+  <title>WhatsUp?</title>
   <link rel="stylesheet" href="css/login.css">
   <link rel="stylesheet" href="css/main.css">
     <!-- Latest compiled and minified CSS -->
